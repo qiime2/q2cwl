@@ -1,0 +1,10 @@
+phylogeny:
+  class: File
+  location: https://docs.qiime2.org/2018.8/data/tutorials/moving-pictures/rooted-tree.qza
+table:
+  class: File
+  location: https://docs.qiime2.org/2018.8/data/tutorials/moving-pictures/table.qza
+metadata:
+  class: File
+  location: https://data.qiime2.org/2018.8/tutorials/moving-pictures/sample_metadata.tsv
+sampling_depth: 1109

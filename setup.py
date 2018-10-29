@@ -6,4 +6,5 @@ setup(
     license='BSD-3-Clause',
     packages=find_packages(),
     entry_points={
-        'console_scripts': ['q2cwl=q2cwl:root']})
+        'console_scripts': ['q2cwl=q2cwl.cli:templater',
+                            'q2cwl-run=q2cwl.cli:runner']})

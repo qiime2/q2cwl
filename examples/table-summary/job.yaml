@@ -1,0 +1,3 @@
+table:
+  class: File
+  location: https://docs.qiime2.org/2018.8/data/tutorials/moving-pictures/table.qza
