@@ -1,0 +1,9 @@
+metadata:
+  - class: File
+    location: https://data.qiime2.org/2018.8/tutorials/longitudinal/sample_metadata.tsv
+  - class: File
+    location: https://docs.qiime2.org/2018.8/data/tutorials/longitudinal/shannon.qza
+default_metric: shannon
+default_group_column: delivery
+state_column: month
+individual_id_column: studyid
