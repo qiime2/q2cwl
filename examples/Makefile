@@ -1,5 +1,8 @@
 .PHONY: render core-metrics emperor-plot beta-group-sig volatility test
 
+clean:
+	rm -r **/out/*
+
 render:
 	q2cwl template conda tools/
 
@@ -18,5 +21,17 @@ table-summary: render
 volatility: render
 	cwl-runner --outdir volatility/out tools/qiime2.plugins.longitudinal.visualizers.volatility.cwl volatility/job.yaml
 
-test: core-metrics emperor-plot beta-group-sig table-summary volatility
+exporting-file: render
+	cwl-runner --outdir exporting-file/out tools/qiime2.tools.export.cwl exporting-file/job.yaml
+
+exporting-dir: render
+	cwl-runner --outdir exporting-dir/out tools/qiime2.tools.export.cwl exporting-dir/job.yaml
+
+importing-file: exporting-file
+	cwl-runner --outdir importing-file/out tools/qiime2.tools.import.cwl importing-file/job.yaml
+
+importing-dir: exporting-dir
+	cwl-runner --outdir importing-dir/out tools/qiime2.tools.import.cwl importing-dir/job.yaml
+
+test: core-metrics emperor-plot beta-group-sig table-summary volatility importing-file importing-dir
 	:
