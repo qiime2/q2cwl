@@ -29,7 +29,7 @@ CWL_MAP = {
 Status = collections.namedtuple('Status', ['status', 'action', 'message'])
 
 
-def root_structure():
+def root_structure(extra_req_factory):
     tool = collections.OrderedDict()
     tool['cwlVersion'] = 'v1.0'
     tool['class'] = 'CommandLineTool'
@@ -50,21 +50,82 @@ def root_structure():
             ]
         }
     }
+    requirements = extra_req_factory()
+    requirements.update(tool['requirements'])
+    tool['requirements'] = requirements
+
+    return tool
+
+def make_import(extra_req_factory):
+    tool = root_structure(extra_req_factory)
+    tool['id'] = 'qiime2.tools.import'
+    tool['label'] = 'Import data into a QIIME 2 Artifact'
+    tool['arguments'] = ['tools', 'import', 'inputs.json']
+    tool['inputs']['input_type'] = collections.OrderedDict([
+        ('label', 'type'),
+        ('doc', 'The Semantic Type to import the data as.'),
+        ('type', 'string')
+    ])
+    tool['inputs']['input_format'] = collections.OrderedDict([
+        ('label', 'input_format'),
+        ('doc', 'The format the data is currently in.'),
+        ('type', 'string?')
+    ])
+    tool['inputs']['input_data'] = collections.OrderedDict([
+        ('label', 'data'),
+        ('doc', 'The data to import.'),
+        ('type', ['File', 'Directory'])
+    ])
+    tool['inputs']['output_name'] = collections.OrderedDict([
+        ('label', 'output_name'),
+        ('doc', 'The filename to use for the artifact.'),
+        ('type', 'string?'),
+        ('default', 'artifact.qza')
+    ])
+    tool['outputs']['artifact'] = collections.OrderedDict([
+        ('label', 'artifact'),
+        ('type', 'File'),
+        ('outputBinding', {'glob': '$(inputs.output_name)'})
+    ])
 
     return tool
 
 
-def make_tool(plugin, action, directory, extra_requirements_factory):
-    tool = root_structure()
+def make_export(extra_req_factory):
+    tool = root_structure(extra_req_factory)
+    tool['id'] = 'qiime2.tools.export'
+    tool['label'] = 'Export data from a QIIME 2 Artifact'
+    tool['arguments'] = ['tools', 'export', 'inputs.json']
+    tool['inputs']['input_artifact'] = collections.OrderedDict([
+        ('label', 'artifact'),
+        ('doc', 'The data to export.'),
+        ('type', 'File')
+    ])
+    tool['inputs']['output_format'] = collections.OrderedDict([
+        ('label', 'output_format'),
+        ('doc', 'The format to export data to.'),
+        ('type', 'string?')
+    ])
+    tool['inputs']['output_name'] = collections.OrderedDict([
+        ('label', 'output_name'),
+        ('doc', 'The name of the directory to write into.'),
+        ('type', 'string?'),
+        ('default', 'data')
+    ])
+    tool['outputs']['data'] = collections.OrderedDict([
+        ('label', 'data'),
+        ('type', ['File', 'Directory']),
+        ('outputBinding', {'glob': '$(inputs.output_name)'})
+    ])
+
+    return tool
+
+
+def make_tool(plugin, action, directory, extra_req_factory):
+    tool = root_structure(extra_req_factory)
     tool['id'] = action.get_import_path()
     tool['label'] = action.name
     tool['doc'] = action.description
-
-
-    requirements = extra_requirements_factory()
-    requirements.update(tool['requirements'])
-    tool['requirements'] = requirements
-
     tool['arguments'] = [
         plugin.name.replace('-', '_'), action.id, 'inputs.json']
 
@@ -172,21 +233,37 @@ def find_all_actions(plugin=None):
             yield plugin, action
 
 
-def template(directory, plugin, extra_requirements_factory):
+def write_tool(tool, directory):
     os.makedirs(directory, exist_ok=True)
+    filepath = os.path.join(directory, tool['id'] + '.cwl')
+    with open(filepath, 'w') as fh:
+        fh.write('#!/usr/bin/env cwl-runner\n\n')
+        fh.write(yaml.dump(tool, default_flow_style=False, indent=2))
+
+    return filepath
+
+
+def template(directory, plugin, extra_req_factory):
     for plugin, action in find_all_actions(plugin):
         try:
-            tool = make_tool(
-                plugin, action, directory, extra_requirements_factory)
-            filepath = os.path.join(directory, tool['id'] + '.cwl')
-            with open(filepath, 'w') as fh:
-                fh.write('#!/usr/bin/env cwl-runner\n\n')
-                fh.write(yaml.dump(tool, default_flow_style=False, indent=2))
+            tool = make_tool(plugin, action, directory, extra_req_factory)
+            fp = write_tool(tool, directory)
+            yield Status('success', fp, "")
 
-            yield Status('success', filepath, "")
         except Exception as e:
             yield Status('error', repr(action), e)
 
 
-def template_tools(directory, extra_requirements_factory):
-    yield
+def template_tools(directory, extra_req_factory):
+    # QIIME 2 "tools", but they are CWL tools too after this.
+    try:
+        import_tool = make_import(extra_req_factory)
+        fp = write_tool(import_tool, directory)
+        yield Status('success', fp, "")
+
+        export_tool = make_export(extra_req_factory)
+        fp = write_tool(export_tool, directory)
+        yield Status('success', fp, "")
+
+    except Exception as e:
+        yield Status('error', 'Creating QIIME 2 tool', e)

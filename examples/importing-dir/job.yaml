@@ -1,0 +1,6 @@
+input_data:
+  class: Directory
+  path: ../exporting-dir/out/
+input_type: FeatureTable[Frequency]
+input_format: BIOMV100DirFmt
+output_name: my-artifact.qza
