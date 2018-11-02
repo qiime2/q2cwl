@@ -14,6 +14,7 @@ import io
 
 import q2cwl.template as template
 
+
 def conda_list():
     results = subprocess.run(['conda', 'list', '--json'],
                              stdout=subprocess.PIPE, check=True)
