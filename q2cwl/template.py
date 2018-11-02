@@ -56,6 +56,7 @@ def root_structure(extra_req_factory):
 
     return tool
 
+
 def make_import(extra_req_factory):
     tool = root_structure(extra_req_factory)
     tool['id'] = 'qiime2.tools.import'

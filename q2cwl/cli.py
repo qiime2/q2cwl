@@ -72,7 +72,6 @@ def docker(image_id: str, tools: bool = True, availability: str = 'remote',
         echo_status(status, quiet)
 
 
-
 @click.command(help="Do not use directly, used internally by q2cwl.")
 @click.argument('plugin', type=str)
 @click.argument('action', type=str)

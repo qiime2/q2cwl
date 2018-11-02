@@ -20,7 +20,7 @@ def run_docker_cmd(image_id: str, include_tools: bool = True,
         r['dockerImageId'] = image_id
         r['dockerOutputDirectory'] = '/home/qiime2'
 
-        return { 'DockerRequirement': r }
+        return {'DockerRequirement': r}
 
     output_dir = '/tmp/cwl-tools/'
     yield from template.template(output_dir, None, make_requirements)
