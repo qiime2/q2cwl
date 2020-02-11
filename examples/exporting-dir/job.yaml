@@ -1,5 +1,5 @@
 input_artifact:
   class: File
   location: https://docs.qiime2.org/2018.8/data/tutorials/moving-pictures/table.qza
-output_format: BIOMV100DirFmt
-output_name: output-dir
+output_format: BIOMV210DirFmt
+output_name: exporting-dir

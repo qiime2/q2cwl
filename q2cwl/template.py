@@ -206,6 +206,20 @@ def template_parameters(name, spec):
                 'doc': 'Column name to use from %r' % name,
             }
         }
+    elif qiime_type.to_ast()['members'][0]['name'] in CWL_MAP.keys() and \
+            qiime_type.to_ast()['members'][1]['name'] in CWL_MAP.keys():
+
+        union_members = qiime_type.to_ast()['members']
+        return {
+            name: {
+                'type': [
+                        CWL_MAP[union_members[0]['name']],
+                        CWL_MAP[union_members[1]['name']]
+                        ],
+                'doc': spec.description if spec.has_description() else None,
+                'default': 'auto',
+            }
+        }
     else:
         raise Exception("Unknown type: %r" % qiime_type)
 
