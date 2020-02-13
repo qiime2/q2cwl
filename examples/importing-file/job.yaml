@@ -2,5 +2,5 @@ input_data:
   class: File
   path: ../exporting-file/out/my-json-table.biom
 input_type: FeatureTable[Frequency]
-input_format: BIOMV100Format
+input_format: BIOMV210Format
 output_name: my-artifact.qza

@@ -1,0 +1,13 @@
+predictions:
+  class: File
+  location: https://docs.qiime2.org/2019.10/data/tutorials/sample-classifier/moving-pictures-classifier/new_predictions.qza
+probabilities:
+  class: File
+  location: https://docs.qiime2.org/2019.10/data/tutorials/sample-classifier/moving-pictures-classifier/probabilities.qza
+truth: 
+  class: File
+  location: https://data.qiime2.org/2019.10/tutorials/moving-pictures/sample_metadata.tsv
+truth_column: body-site
+missing_samples: error
+vmax: auto
+vmin: auto
