@@ -11,12 +11,3 @@ truth_column: body-site
 missing_samples: error
 vmax: auto
 vmin: auto
-outputs:
-  visualization:
-    class: File
-    location:  https://docs.qiime2.org/2019.10/data/tutorials/sample-classifier/moving-pictures-classifier/new_confusion_matrix.qzv
-    contents:
-    doc: null
-    outputBinding:
-      glob: visualization.qzv
-      loadContents: true

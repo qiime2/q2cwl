@@ -206,18 +206,32 @@ def template_parameters(name, spec):
                 'doc': 'Column name to use from %r' % name,
             }
         }
-    elif qiime_type.to_ast()['members'][0]['name'] in CWL_MAP.keys() and \
-            qiime_type.to_ast()['members'][1]['name'] in CWL_MAP.keys():
+    elif qiime_type.to_ast()['type'] == 'union':
+        # raise ValueError(qiime_type.to_ast())
+        # check to see if type is a union and then perform this operation
+        # There could more than two unions
+        # Loop through members to get the names and their corresponding
+        # values in the CWL_MAP dict
 
-        union_members = qiime_type.to_ast()['members']
-        return {
+        # elif qiime_type.to_ast()['members'][0]['name'] in CWL_MAP.keys() and
+        # qiime_type.to_ast()['members'][1]['name'] in CWL_MAP.keys():
+
+        # CWL_MAP[union_members[0]['name']],
+        # CWL_MAP[union_members[1]['name']]
+        # CWL_MAP[union_member_name]
+        # template_param_list = []
+        type_list = []
+        for member in qiime_type.to_ast()['members']:
+            union_member_name = member['name']
+            type_list.append(CWL_MAP[union_member_name])
+        # for member in qiime_type.to_ast()['members']:
+            # union_member_name = member['name']
+        return{
             name: {
-                'type': [
-                        CWL_MAP[union_members[0]['name']],
-                        CWL_MAP[union_members[1]['name']]
-                        ],
-                'doc': spec.description if spec.has_description() else None,
-                'default': 'auto',
+                'type': type_list,
+                'doc': spec.description if spec.has_description()
+                else None,
+                'default': default,
             }
         }
     else:
