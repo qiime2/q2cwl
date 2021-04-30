@@ -7,11 +7,9 @@
 # ----------------------------------------------------------------------------
 
 import sys
-import json
 import traceback as tb
 
 import click
-import qiime2.sdk as sdk
 
 import q2cwl
 
