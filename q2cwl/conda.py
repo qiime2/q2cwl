@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# Copyright (c) 2018-2020, QIIME 2 development team.
+# Copyright (c) 2018-2021, QIIME 2 development team.
 #
 # Distributed under the terms of the Modified BSD License.
 #
@@ -32,7 +32,7 @@ def format_software_package(dep):
 
 def run_conda_cmd(output_dir: str, include_tools: bool = True,
                   plugin: str = None):
-    packages = list(map(format_software_package, conda_list()))
+    # packages = list(map(format_software_package, conda_list()))
 
     def make_requirements():
         req = collections.OrderedDict()

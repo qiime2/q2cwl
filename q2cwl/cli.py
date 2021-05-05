@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# Copyright (c) 2018-2020, QIIME 2 development team.
+# Copyright (c) 2018-2021, QIIME 2 development team.
 #
 # Distributed under the terms of the Modified BSD License.
 #
@@ -7,11 +7,9 @@
 # ----------------------------------------------------------------------------
 
 import sys
-import json
 import traceback as tb
 
 import click
-import qiime2.sdk as sdk
 
 import q2cwl
 
